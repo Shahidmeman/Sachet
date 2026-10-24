@@ -218,3 +218,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Sachet: local secrets and environments
+.env.*
+!.env.example
+.streamlit/secrets.toml
