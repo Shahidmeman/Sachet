@@ -54,6 +54,9 @@ PAYMENT_TERMS = [
     "release fee",
     "send money",
     "upi payment",
+    "registration fee",
+    "upfront fee",
+    "pay a fee"
 ]
 
 CREDENTIAL_TERMS = [
@@ -64,6 +67,18 @@ CREDENTIAL_TERMS = [
     "cvv",
     "verify your kyc",
 ]
+
+JOB_SCAM_SIGNALS = [
+    "guarantee employment",
+    "guaranteed job",
+    "job offer",
+    "hiring fee",
+    "pay a registration fee",
+    "registration fee to guarantee",
+    "fee to secure a job",
+    "guaranteed employment",
+]
+
 
 
 def extract_urls(text):
@@ -134,6 +149,11 @@ def analyze_message(text):
     This is a heuristic, not a calibrated probability.
     """
     normalized = text.lower()
+    
+    job_signals_found = [
+        term for term in JOB_SCAM_SIGNALS if term in normalized
+    ]
+
     evidence = []
     score = 0
 
@@ -192,6 +212,13 @@ def analyze_message(text):
             + ", ".join(credentials_found)
         )
 
+    if job_signals_found:
+        score +=20
+        evidence.append(
+            "Job-related warning language detected:"
+            +",".join(job_signals_found)
+        )
+        
     if upi_ids:
         evidence.append(
             "UPI-like identifier(s) found: " + ", ".join(upi_ids)
